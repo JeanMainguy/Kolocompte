@@ -4,7 +4,7 @@
     <Header title="Kolocompte"/> 
     
   </div>
-    <h3>Total : {{total_expenses}}</h3>
+    <!-- <h3>Total : {{total_expenses}}</h3> -->
 
   <div class="container">
       <Header title="Dépenses"/>
@@ -12,7 +12,7 @@
 
       <Members @update-member="updateMember"  :members="members"/>
       <div class="center">
-      <Button @btn-click="solveBalance" text="Équilibres" color="green"/>
+      <!-- <Button @btn-click="solveBalance" text="Équilibres" color="green"/> -->
       
       </div>
   </div>
@@ -36,7 +36,7 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/Header.vue'
 import Members from './components/Members.vue'
-import Button from "./components/Button.vue"
+// import Button from "./components/Button.vue"
 import Balance from "./components/Balance.vue"
 import Transactions from "./components/Transactions.vue"
 
@@ -45,7 +45,7 @@ export default {
   components: {
      Header,
      Members,
-     Button,
+    //  Button,
      Balance,
      Transactions
   }, 
@@ -122,7 +122,7 @@ export default {
       console.log("INITIAL SUM BALAnCE IS", sum_abs_balance)
       let operation_count = 0
       
-      do {
+      while (this.roundWith2Decimal(sum_abs_balance) > 0 && operation_count < 25) {
 
 
         sorted_members =  sorted_members.sort((a, b) => (a.solved_balance > b.solved_balance ? -1 : 1))
@@ -174,8 +174,9 @@ export default {
 
       // console.log("SUM BALAnCE IS", sum_abs_balance, '--round it-->', this.roundWith2Decimal(sum_abs_balance))
       operation_count += 1;
+      
 
-      } while (this.roundWith2Decimal(sum_abs_balance) > 0 && operation_count < 25);
+      } 
       console.log("DONE RESOLVING... with ", operation_count, "operation")
     },
 
