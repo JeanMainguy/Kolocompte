@@ -24,10 +24,7 @@ methods: {
     onSubmit(e) {
         e.preventDefault()
 
-        this.expense_value
-
-
-        console.log("VALU", this.expense_value)
+        console.log("VALUE", this.expense_value)
 
         this.$emit("add-value", Number(this.expense_value))
         

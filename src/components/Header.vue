@@ -1,13 +1,13 @@
 .<template>
     <header>
         <h1> {{ title }}</h1>
-        <Button text="Add something" color="green"/>
+        
 
     </header>
 </template>
 
 <script>
-import Button from "./Button.vue"
+// import Button from "./Button.vue"
 
 export default {
     name: 'Header',
@@ -15,7 +15,7 @@ export default {
         title: String,
     },
     components: {
-        Button
+        // Button
     }
     
 

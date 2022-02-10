@@ -1,12 +1,12 @@
 <template>
     <div :key="member.id" v-for="member in members">
-        <Member :member="member" />
+        <Expenses @update-member="updateMember" :member="member" />
     </div>
 </template>
 
 
 <script>
-import Member from './Member'
+import Expenses from './Expenses'
 
 export default {
     name: 'Members', 
@@ -14,8 +14,22 @@ export default {
     props: {
         members: Array
     },
+
+    emits: ['update-member'],
+    
     components: {
-        Member
+        Expenses
     },
+
+
+    methods: {
+        updateMember(member, value, operation) {
+            //this.member.expenses = expenses
+            console.log("NEW EXPENSE", value)
+
+            this.$emit('update-member', member, value, operation)  
+        },
+    }
+    
 }
 </script>
