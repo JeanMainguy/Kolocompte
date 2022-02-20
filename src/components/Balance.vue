@@ -5,6 +5,8 @@
             {{member.name}} {{roundWith2Decimal(member.balance)}}
 
         </div>
+
+        
 <!-- 
     <Button
         @btn-click="$emit('toggle-add-task')"
@@ -70,6 +72,12 @@ components: {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.carre{
+	width:200px;
+	height:200px;
+	background:#069;
 }
 </style>
 

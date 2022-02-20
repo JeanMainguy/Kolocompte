@@ -2,9 +2,12 @@
 
 <form @submit="onSubmit" class=add-form target="#here">
      <div class="form-control">
-      <label>Nouvelle dépense</label>
+      <label>{{this.label}}</label>
 
-    <input class=member  name="expense_value" step="0.01" type="number" v-model="expense_value" /><br />
+    <input class=member  name="expense_value" 
+           step="0.01" type="number" 
+           placeholder="Nouvelle dépense" 
+           v-model="expense_value" /><br />
 
     </div>
 </form>
@@ -15,11 +18,17 @@
 <script>
 export default {
     name: 'AddExpense',
-      data() {
-    return {
-      expense_value: "",
-    }
-}, 
+
+    data() {
+      return {
+        expense_value: "",
+        }
+    },
+
+    props: {
+      label: String,
+    },
+
 methods: {
     onSubmit(e) {
         e.preventDefault()
@@ -38,10 +47,10 @@ methods: {
 
 <style scoped>
 .add-form {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 .form-control {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 .form-control label {
   display: block;

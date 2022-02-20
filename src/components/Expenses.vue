@@ -1,22 +1,12 @@
 <template>
-<div  class="member">
-    <div @click="expandInfo()">
-        <h3> {{ member.name }} {{ member.expense_sum }}€ </h3>
-    </div>
-    
-
-    <div v-if="showExpenses">
-        <li class=expense :key="expense" v-for="expense in member.expenses">
+<div  class="member" >
+  
+        <li class=expense :key="expense" v-for="expense in member[type]">
         <h3>{{expense}} 
             <i @click="deleteValue(expense)" class="fas fa-times"></i>
         </h3>
         </li>
-        <AddExpense @add-value="addValue"/>
-
-    </div>
-
-
-
+        <AddExpense @add-value="addValue" :label="type == 'food_expenses' ? 'Nourriture' : 'Charges'" />
 
 </div>
 
@@ -30,12 +20,13 @@ export default {
     name: 'Expenses', 
     props: {
         member: Object,
+        type: String,
+
     },
     data() {
     return {
       expenses: [],
-      expense_sum : Number, 
-      showExpenses: false,
+      expense_sum : Number,
     }
   },
 
@@ -46,14 +37,12 @@ export default {
         addValue(value) {
             
             console.log('THIS EXPENSES', this.expenses)
-            this.$emit('update-member', this.member.id, value, "add")
+            this.$emit('update-member', this.member.id, value, "add", this.type)
 
         },
-        expandInfo () {
-            this.showExpenses = !this.showExpenses
-        },
+
         deleteValue(value){
-            this.$emit('update-member', this.member.id, value, "remove")
+            this.$emit('update-member', this.member.id, value, "remove", this.type)
 
             // this.expenses = this.expenses.filter((exp) => exp !== expense)
             // this.expense_sum = this.expenses.reduce((a, b) => a + b, 0)

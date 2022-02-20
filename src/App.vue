@@ -9,8 +9,10 @@
   <div class="container">
       <Header title="Dépenses"/>
 
+      <div class=member :key="member.id" v-for="member in this.members">
 
-      <Members @update-member="updateMember"  :members="members"/>
+         <Member @hide-all="hideAllMemberInfo" @expand-info="expandMemberInfo" @update-member="updateMember"  :member="member"/>
+      </div>
       <div class="center">
       <!-- <Button @btn-click="solveBalance" text="Équilibres" color="green"/> -->
       
@@ -35,7 +37,7 @@
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/Header.vue'
-import Members from './components/Members.vue'
+import Member from './components/Member.vue'
 // import Button from "./components/Button.vue"
 import Balance from "./components/Balance.vue"
 import Transactions from "./components/Transactions.vue"
@@ -44,7 +46,7 @@ export default {
   name: 'App',
   components: {
      Header,
-     Members,
+     Member,
     //  Button,
      Balance,
      Transactions
@@ -54,6 +56,9 @@ export default {
     return {
       members: [], 
       total_expenses: Number,
+      total_weeks_spent:Number,
+      total_food_expenses:Number,
+      total_house_expenses:Number,
       sum_abs_balance:Number,
       transactions:[],
     }
@@ -64,8 +69,15 @@ export default {
       
       this.members = this.members.map( member => this.sumExpenses(member));
 
-      this.total_expenses = this.members.map(item => item.expense_sum).reduce((prev, next) => prev + next);
+
+      this.total_house_expenses =  this.members.map(item => item.house_expense_sum).reduce((prev, next) => prev + next);
       
+      this.total_food_expenses =  this.members.map(item => item.food_expense_sum).reduce((prev, next) => prev + next);
+      
+      this.total_expenses = this.total_house_expenses + this.total_food_expenses 
+
+      this.total_weeks_spent = this.members.length*4 - this.members.map(item => item.week_away).reduce((prev, next) => prev + next);
+
       this.members = this.members.map( member => this.computeBalance(member));
       
       this.solveBalance()
@@ -74,26 +86,46 @@ export default {
 
     sumExpenses(member){
 
-      member.expense_sum = member.expenses.reduce((a, b) => a + b, 0);
+      member.food_expense_sum = member.food_expenses.reduce((a, b) => a + b, 0);
+      member.house_expense_sum = member.house_expenses.reduce((a, b) => a + b, 0);
+      member.expense_sum = member.house_expenses.reduce((a, b) => a + b, 0);
       return member
 
     },
     computeBalance(member, key_name='balance'){
-      member[key_name] = member.expense_sum - (this.total_expenses/this.members.length)
+
+
+      let house_balance = member.house_expense_sum - (this.total_house_expenses/this.members.length)
+      let food_balance =  member.food_expense_sum - (4 - member.week_away)*(this.total_food_expenses/this.total_weeks_spent)
+      
+      console.log("food per week and per personne", (this.total_food_expenses/this.total_weeks_spent))
+      console.log(member.name, "is out ",member.week_away, "/4 weeks and for food need to pay", food_balance)
+
+      member[key_name] = house_balance + food_balance
+      
       return member
 
     },
 
-    updateMember(member_index, value, operation) {
+    updateMember(member_index, value, operation, expense_type) {
 
       if (operation == "add") {
-        this.members[member_index].expenses = [...this.members[member_index].expenses, value]
+        this.members[member_index][expense_type] = [...this.members[member_index][expense_type], value]
       }
 
       else if (operation == "remove") {
-        // this.members[member_index].expenses = this.members[member_index].expenses.filter((exp) => exp !== value)
-        const idx = this.members[member_index].expenses.findIndex(v => v==value);
-        this.members[member_index].expenses.splice(idx,1);
+        // this.members[member_index][expense_type] = this.members[member_index][expense_type].filter((exp) => exp !== value)
+        const idx = this.members[member_index][expense_type].findIndex(v => v==value);
+        this.members[member_index][expense_type].splice(idx,1);
+      }
+      else if (operation == "week_away") {
+        let week_away =  this.members[member_index].week_away 
+        week_away += value
+        week_away = (week_away == 0 ? 4 : week_away)
+        week_away %= 5
+
+        this.members[member_index].week_away = Math.abs(week_away)
+
       }
 
       this.updateAllMembers()
@@ -174,65 +206,93 @@ export default {
 
       // console.log("SUM BALAnCE IS", sum_abs_balance, '--round it-->', this.roundWith2Decimal(sum_abs_balance))
       operation_count += 1;
-      
 
       } 
       console.log("DONE RESOLVING... with ", operation_count, "operation")
     },
+
+    hideAllMemberInfo(){
+      console.log('HIDE ALL INFO')
+      this.members = this.members.map(item => ({...item, showExpenses: false}))
+      console.log(this.members)
+      
+    },
+
+    expandMemberInfo (member_index) {
+
+      console.log(this.members[member_index])
+        this.members[member_index].showExpenses = !this.members[member_index].showExpenses
+        },
+        
 
  },
 
   created() {
     this.total_expenses = 0,
 
+    this.total_weeks_spent = 0,
+
     this.members = [
       {
       id:0, 
       name:"Arthur",
-      expenses:[50],
+      food_expenses:[],
+     house_expenses:[50],
       expense_sum:0,
       balance:0,
+      week_away:4,
     }, 
     {
       id:1, 
       name:"Jean",
-      expenses:[6],
+      food_expenses:[],
+     house_expenses:[6],
       expense_sum:0,
       balance:0,
+      week_away:0,
     }, 
     {
       id:2,
       name:"Nao",
-      expenses:[70],
+      food_expenses:[8,88],
+     house_expenses:[70],
       expense_sum:0,
       balance:0,
+      week_away:0,
     },
     {
       id:3,
       name:"Kiki",
-      expenses:[40],
+      food_expenses:[],
+     house_expenses:[40],
       expense_sum:0,
       balance:0,
+      week_away:0,
     },
     {
       id:4,
-      name:"Clémentine",
-      expenses:[85],
+      name:"Clém",
+      food_expenses:[],
+     house_expenses:[85],
       expense_sum:0,
       balance:0,
+      week_away:0,
     },
     {
       id:5,
       name:"Simon",
-      expenses:[40],
+      food_expenses:[],
+     house_expenses:[40],
       expense_sum:0,
       balance:0,
+      week_away:0,
     } ]
 
   },
 
 
   mounted(){
+    this.hideAllMemberInfo()
     this.updateAllMembers()
 
 
