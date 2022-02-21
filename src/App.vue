@@ -121,7 +121,7 @@ export default {
       else if (operation == "week_away") {
         let week_away =  this.members[member_index].week_away 
         week_away += value
-        week_away = (week_away == 0 ? 4 : week_away)
+        week_away = (week_away == -1 ? 4 : week_away)
         week_away %= 5
 
         this.members[member_index].week_away = Math.abs(week_away)
