@@ -29,8 +29,7 @@
     <Header title="Comment équilibrer?"/>
     <Transactions :transactions="transactions"/>
 
-    <div class="center">
-    </div>
+
 </div>
 </template>
 
@@ -92,7 +91,7 @@ export default {
       return member
 
     },
-    computeBalance(member, key_name='balance'){
+    computeBalance(member){
 
 
       let house_balance = member.house_expense_sum - (this.total_house_expenses/this.members.length)
@@ -101,7 +100,9 @@ export default {
       console.log("food per week and per personne", (this.total_food_expenses/this.total_weeks_spent))
       console.log(member.name, "is out ",member.week_away, "/4 weeks and for food need to pay", food_balance)
 
-      member[key_name] = house_balance + food_balance
+      member.balance = house_balance + food_balance
+      member.house_balance = house_balance
+      member.food_balance = food_balance
       
       return member
 
@@ -137,14 +138,18 @@ export default {
 
     },
 
+
     solveBalance() {
 
-      
       this.transactions = [];
+      
+      this.members = this.members.map(function (member) {
+        member.solved_balance = member.balance;
+        return member
+      });
 
-      this.members = this.members.map( member => this.computeBalance(member, "solved_balance"));
- 
       let sorted_members = [...this.members ];
+      
 
       let sum_abs_balance, creditor, debtor, amount;
 
@@ -214,16 +219,12 @@ export default {
     hideAllMemberInfo(){
       console.log('HIDE ALL INFO')
       this.members = this.members.map(item => ({...item, showExpenses: false}))
-      console.log(this.members)
       
     },
 
     expandMemberInfo (member_index) {
-
-      console.log(this.members[member_index])
         this.members[member_index].showExpenses = !this.members[member_index].showExpenses
         },
-        
 
  },
 
@@ -232,69 +233,81 @@ export default {
 
     this.total_weeks_spent = 0,
 
-    this.members = [
-      {
-      id:0, 
-      name:"Arthur",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    }, 
-    {
-      id:1, 
-      name:"Jean",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    }, 
-    {
-      id:2,
-      name:"Nao",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    },
-    {
-      id:3,
-      name:"Kiki",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    },
-    {
-      id:4,
-      name:"Clém",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    },
-    {
-      id:5,
-      name:"Simon",
-      food_expenses:[],
-     house_expenses:[],
-      expense_sum:0,
-      balance:0,
-      week_away:0,
-    } ]
+    this.members_name = ["Arthur", "Kiki", "Simon", "Clém", "Nao", "Jean"]
+
+    this.members = []
+  //     {
+  //     id:0, 
+  //     name:"Arthur",
+  //     food_expenses:[],
+  //    house_expenses:[],
+  //     expense_sum:0,
+  //     balance:0,
+  //     week_away:0,
+  //   }, 
+  //   {
+  //     id:1, 
+  //     name:"Jean",
+  //     food_expenses:[],
+  //    house_expenses:[],
+  //     expense_sum:0,
+  //     balance:0,
+  //     week_away:0,
+  //   }, 
+  //   {
+  //     id:2,
+  //     name:"Nao",
+  //     food_expenses:[],
+  //    house_expenses:[],
+  //     expense_sum:0,
+  //     balance:0,
+  //     week_away:0,
+  //   },
+  //   {
+  //     id:3,
+  //     name:"Kiki",
+  //     food_expenses:[],
+  //    house_expenses:[],
+  //     expense_sum:0,
+  //     balance:0,
+  //     week_away:0,
+  //   },
+  //   {
+  //     id:4,
+  //     name:"Clém",
+  //     food_expenses:[],
+  //    house_expenses:[],
+  //     expense_sum:0,
+  //     balance:0,
+  //     week_away:0,
+  //   },
+  //   {
+  //     id:5,
+  //     name:"Simon",
+  //   } ]
 
   },
 
 
   mounted(){
-    this.hideAllMemberInfo()
-    this.updateAllMembers()
+    this.members = this.members_name.map( function(name, index) {
+                                          let member_info = {
+                                            id:index,
+                                            name:name,
+                                              food_expenses:[],
+                                            house_expenses:[],
+                                              expense_sum:0,
+                                              balance:0,
+                                              week_away:0,
+                                              showExpenses:false,
+                                          } 
+                                          return member_info
+                                        });
 
+  console.log(this.members)
+
+    this.hideAllMemberInfo();
+    this.updateAllMembers();
 
   },
 

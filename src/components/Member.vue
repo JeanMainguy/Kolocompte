@@ -9,6 +9,8 @@
                     <i class="expense_sum fa-solid fa-pizza-slice"></i> {{ this.member.food_expense_sum }}€ 
 
             <i class="expense_sum fa-solid fa-arrow-right-from-bracket"></i> {{this.member.week_away}}/4
+
+            <i class="expense_sum fa-solid fa-angle-down"></i>
             </h3>
             
         </div>
