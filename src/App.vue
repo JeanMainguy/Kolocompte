@@ -233,7 +233,7 @@ export default {
 
     this.total_weeks_spent = 0,
 
-    this.members_name = ["Arthur", "Kiki", "Simon", "Clém", "Nao", "Jean"]
+    this.members_name = ["Kiki", "Simon", "Clém", "Océane", "Jean"]
 
     this.members = []
   //     {
