@@ -2,13 +2,12 @@
 
   <div class="center">
     <Header title="Kolocompte"/> 
-    
+
   </div>
-    <!-- <h3>Total : {{total_expenses}}</h3> -->
 
   <div class="container">
-      <Header title="Dépenses"/>
-
+      <Header title="Dépenses"/> 
+ 
       <div class=member :key="member.id" v-for="member in this.members">
 
          <Member @hide-all="hideAllMemberInfo" @expand-info="expandMemberInfo" @update-member="updateMember"  :member="member"/>
@@ -17,6 +16,12 @@
       <!-- <Button @btn-click="solveBalance" text="Équilibres" color="green"/> -->
       
       </div>
+
+  <div class="center">
+      <Button @btn-click="ClearAllMembers" color="#DC143C" text="Effacer toutes les dépenses"/> 
+
+  </div>
+  
   </div>
   <div class="container">
     <Header title="Balance"/>
@@ -37,7 +42,7 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import Header from './components/Header.vue'
 import Member from './components/Member.vue'
-// import Button from "./components/Button.vue"
+import Button from "./components/Button.vue"
 import Balance from "./components/Balance.vue"
 import Transactions from "./components/Transactions.vue"
 
@@ -46,7 +51,7 @@ export default {
   components: {
      Header,
      Member,
-    //  Button,
+     Button,
      Balance,
      Transactions
   }, 
@@ -63,6 +68,8 @@ export default {
     }
   },
   
+  
+
   methods: {
     updateAllMembers(){
       
@@ -81,8 +88,27 @@ export default {
       
       this.solveBalance()
 
-    },
+      console.log("Write members value to local storage")
+      localStorage.setItem('members', JSON.stringify(this.members))
 
+    },
+    ClearAllMembers(){
+      this.members = this.members_name.map( function(name, index) {
+                                      let member_info = {
+                                        id:index,
+                                        name:name,
+                                          food_expenses:[],
+                                        house_expenses:[],
+                                          expense_sum:0,
+                                          balance:0,
+                                          week_away:0,
+                                          showExpenses:false,
+                                      } 
+                                      return member_info
+                                    });
+      this.updateAllMembers()
+
+    },
     sumExpenses(member){
 
       member.food_expense_sum = member.food_expenses.reduce((a, b) => a + b, 0);
@@ -240,21 +266,17 @@ export default {
 
 
   mounted(){
-    this.members = this.members_name.map( function(name, index) {
-                                          let member_info = {
-                                            id:index,
-                                            name:name,
-                                              food_expenses:[],
-                                            house_expenses:[],
-                                              expense_sum:0,
-                                              balance:0,
-                                              week_away:0,
-                                              showExpenses:false,
-                                          } 
-                                          return member_info
-                                        });
+    console.log("GET MEMBERS VALUE from local storage")
+    
+    this.members = JSON.parse(localStorage.getItem('members')) || []
+    
+    if  ( Object.keys(this.members).length === 0 ) {
 
-  console.log(this.members)
+          this.ClearAllMembers()
+    }
+
+
+    console.log(this.members)
 
     this.hideAllMemberInfo();
     this.updateAllMembers();
@@ -262,6 +284,7 @@ export default {
   },
 
 }
+
 </script>
 
 <style>
