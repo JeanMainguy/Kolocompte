@@ -233,59 +233,9 @@ export default {
 
     this.total_weeks_spent = 0,
 
-    this.members_name = ["Kiki", "Simon", "Clém", "Océane", "Jean"]
+    this.members_name = ["Kiki", "Simon", "Clém", "Jean"]
 
     this.members = []
-  //     {
-  //     id:0, 
-  //     name:"Arthur",
-  //     food_expenses:[],
-  //    house_expenses:[],
-  //     expense_sum:0,
-  //     balance:0,
-  //     week_away:0,
-  //   }, 
-  //   {
-  //     id:1, 
-  //     name:"Jean",
-  //     food_expenses:[],
-  //    house_expenses:[],
-  //     expense_sum:0,
-  //     balance:0,
-  //     week_away:0,
-  //   }, 
-  //   {
-  //     id:2,
-  //     name:"Nao",
-  //     food_expenses:[],
-  //    house_expenses:[],
-  //     expense_sum:0,
-  //     balance:0,
-  //     week_away:0,
-  //   },
-  //   {
-  //     id:3,
-  //     name:"Kiki",
-  //     food_expenses:[],
-  //    house_expenses:[],
-  //     expense_sum:0,
-  //     balance:0,
-  //     week_away:0,
-  //   },
-  //   {
-  //     id:4,
-  //     name:"Clém",
-  //     food_expenses:[],
-  //    house_expenses:[],
-  //     expense_sum:0,
-  //     balance:0,
-  //     week_away:0,
-  //   },
-  //   {
-  //     id:5,
-  //     name:"Simon",
-  //   } ]
-
   },
 
 
