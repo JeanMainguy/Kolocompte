@@ -4,14 +4,18 @@
     <Header title="Kolocompte"/> 
 
   </div>
-
+  <div class="container">
+    <Header title="Qui habite la maison?"/>
+    <AddMember @remove-member="removeMemberName" @add-member="addMemberName" :member_names="member_names"/>
+</div>
   <div class="container">
       <Header title="Dépenses"/> 
  
       <div class=member :key="member.id" v-for="member in this.members">
 
          <Member @hide-all="hideAllMemberInfo" @expand-info="expandMemberInfo" @update-member="updateMember"  :member="member"/>
-      </div>
+      
+        </div>
       <div class="center">
       <!-- <Button @btn-click="solveBalance" text="Équilibres" color="green"/> -->
       
@@ -45,6 +49,7 @@ import Member from './components/Member.vue'
 import Button from "./components/Button.vue"
 import Balance from "./components/Balance.vue"
 import Transactions from "./components/Transactions.vue"
+import AddMember from "./components/AddMember.vue"
 
 export default {
   name: 'App',
@@ -53,12 +58,14 @@ export default {
      Member,
      Button,
      Balance,
-     Transactions
+     Transactions,
+     AddMember
   }, 
 
   data() {
     return {
-      members: [], 
+      members: [],
+      member_names: [],
       total_expenses: Number,
       total_weeks_spent:Number,
       total_food_expenses:Number,
@@ -73,6 +80,7 @@ export default {
   methods: {
     updateAllMembers(){
       
+      console.log(this.members)
       this.members = this.members.map( member => this.sumExpenses(member));
 
 
@@ -90,10 +98,11 @@ export default {
 
       console.log("Write members value to local storage")
       localStorage.setItem('members', JSON.stringify(this.members))
+      localStorage.setItem('names', JSON.stringify(this.member_names))
 
     },
     ClearAllMembers(){
-      this.members = this.members_name.map( function(name, index) {
+      this.members = this.member_names.map( function(name, index) {
                                       let member_info = {
                                         id:index,
                                         name:name,
@@ -110,7 +119,7 @@ export default {
 
     },
     sumExpenses(member){
-
+      console.log(member)
       member.food_expense_sum = member.food_expenses.reduce((a, b) => a + b, 0);
       member.house_expense_sum = member.house_expenses.reduce((a, b) => a + b, 0);
       member.expense_sum = member.house_expenses.reduce((a, b) => a + b, 0);
@@ -131,6 +140,46 @@ export default {
       member.food_balance = food_balance
       
       return member
+
+    },
+
+    removeMemberName(name){
+      console.log('REMOVE ', name)
+      this.member_names = this.member_names.filter((exp) => exp !== name)
+      this.members = this.members.filter((member) => member.name !== name)
+
+      // console.log(this.member_names)
+      // this.UpdateMembersName()
+      // this.ClearAllMembers()
+
+      // this.members = this.members.filter((exp) => exp.name !== name)
+      this.updateAllMembers()
+
+    },
+    addMemberName(name){
+      if (!this.member_names.includes(name) ){
+        this.member_names = [...this.member_names, name]
+
+        let new_member = {
+                          id:this.member_names.indexOf(name),
+                          name:name,
+                            food_expenses:[],
+                          house_expenses:[],
+                            expense_sum:0,
+                            balance:0,
+                            week_away:0,
+                            showExpenses:false,
+                        }
+
+        this.members = [...this.members, new_member]
+        this.updateAllMembers()
+        
+      }
+      console.log(this.member_names)
+      
+
+      // this.members = this.members.filter((exp) => exp.name !== name)
+      // this.updateAllMembers()
 
     },
 
@@ -259,7 +308,7 @@ export default {
 
     this.total_weeks_spent = 0,
 
-    this.members_name = ["Kiki", "Simon", "Clém", "Jean"]
+    this.member_names = ["Kiki", "Simon", "Clém", "Jean", "Océane",]
 
     this.members = []
   },
@@ -269,6 +318,7 @@ export default {
     console.log("GET MEMBERS VALUE from local storage")
     
     this.members = JSON.parse(localStorage.getItem('members')) || []
+    this.member_names =  JSON.parse(localStorage.getItem('names')) || []
     
     if  ( Object.keys(this.members).length === 0 ) {
 
