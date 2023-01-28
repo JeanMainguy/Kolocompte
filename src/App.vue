@@ -318,7 +318,7 @@ export default {
     console.log("GET MEMBERS VALUE from local storage")
     
     this.members = JSON.parse(localStorage.getItem('members')) || []
-    this.member_names =  JSON.parse(localStorage.getItem('names')) || []
+    this.member_names =  this.members.map(element => element.name)
     
     if  ( Object.keys(this.members).length === 0 ) {
 
