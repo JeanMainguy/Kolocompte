@@ -308,7 +308,7 @@ export default {
 
     this.total_weeks_spent = 0,
 
-    this.member_names = ["Kiki", "Simon", "Clém", "Jean", "Océane",]
+    this.member_names = []
 
     this.members = []
   },
